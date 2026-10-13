@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function for ID boundary limits
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Helper validation for PIN credentials document fields
+    function isValidPinCredential(data) {
+      return data.userId is string &&
+             data.pinHash is string &&
+             data.updatedAt is string;
+    }
+
+    // PIN CREDENTIALS
+    // Salted SHA-256 hashes and lockout counters for individual PIN authentication
+    // Deletion is strictly prohibited. Writes must have valid required fields.
+    match /pin_credentials/{userId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(userId) && isValidPinCredential(request.resource.data);
+      allow delete: if false;
+    }
+
+    // USERS COLLECTION
+    // Profile details and permissions
+    match /users/{userId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(userId);
+      allow delete: if isValidId(userId);
+    }
+
+    // EVENTS / CALENDAR ITEMS
+    // Shared marketing campaigns, publications and commemorative dates
+    match /events/{eventId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(eventId);
+    }
+
+    // EMPLOYEES DIRECTORY
+    // Team members directory and birthday records
+    match /employees/{employeeId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(employeeId);
+    }
+
+    // TASKS
+    // Collaborator tasks and marketing action items
+    match /tasks/{taskId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(taskId);
+    }
+
+    // TRIBUTES / HOMENAGENS
+    // Birthday messages and team recognition
+    match /tributes/{tributeId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(tributeId);
+    }
+
+    // PIN AUDIT LOGS
+    // Audit logs for PIN resets and modifications (Append-only, immutable logs)
+    match /pin_audit_logs/{logId} {
+      allow get, list: if true;
+      allow create: if isValidId(logId);
+      allow update, delete: if false;
+    }
+
+    // NOTIFICATIONS
+    // Internal notifications for actions and reminders
+    match /notifications/{notificationId} {
+      allow get, list: if true;
+      allow create, update, delete: if isValidId(notificationId);
+    }
+  }
+}

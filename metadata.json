@@ -1,0 +1,7 @@
+{
+  "name": "NowTech Solar - Sistema de Planejamento de Marketing",
+  "description": "Sistema profissional de planejamento de marketing da NowTech Solar para o Planejamento de 2027 e Histórico de 2026.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

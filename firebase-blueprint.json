@@ -1,0 +1,169 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role and access details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["admin", "colaborador"] },
+        "active": { "type": "boolean" },
+        "avatar": { "type": "string", "maxLength": 500 },
+        "department": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "email", "name", "role", "active"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Marketing campaign, commemorative date or post event",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "date": { "type": "string", "maxLength": 30 },
+        "time": { "type": "string", "maxLength": 20 },
+        "category": { "type": "string", "maxLength": 50 },
+        "type": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["planejado", "em_producao", "concluido", "agendado", "publicado"] },
+        "channel": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "responsible": { "type": "string", "maxLength": 100 },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "date", "category"]
+    },
+    "Employee": {
+      "title": "Employee",
+      "description": "Company employee for team directory and birthday calendar",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "department": { "type": "string", "maxLength": 100 },
+        "birthday": { "type": "string", "maxLength": 20 },
+        "avatar": { "type": "string", "maxLength": 500 },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "name", "role"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Collaborator task or marketing action item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "assignedTo": { "type": "string", "maxLength": 128 },
+        "assignedName": { "type": "string", "maxLength": 100 },
+        "dueDate": { "type": "string", "maxLength": 30 },
+        "status": { "type": "string", "enum": ["pendente", "em_andamento", "concluida"] },
+        "priority": { "type": "string", "enum": ["baixa", "media", "alta", "urgente"] },
+        "category": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "status"]
+    },
+    "Tribute": {
+      "title": "Tribute",
+      "description": "Special message or recognition for team birthday or milestone",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "employeeId": { "type": "string", "maxLength": 128 },
+        "employeeName": { "type": "string", "maxLength": 100 },
+        "author": { "type": "string", "maxLength": 100 },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "message": { "type": "string", "maxLength": 1000 },
+        "date": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "employeeName", "message", "author"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "App notification for new events, tasks, or milestones",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "message": { "type": "string", "maxLength": 500 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "read": { "type": "boolean" },
+        "type": { "type": "string", "maxLength": 50 },
+        "userId": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["id", "title", "message", "read"]
+    },
+    "PinCredential": {
+      "title": "PinCredential",
+      "description": "Salted SHA-256 PIN hash and access tracking for collaborator login",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "pinHash": { "type": "string", "maxLength": 128 },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string", "maxLength": 50 },
+        "failedAttempts": { "type": "number" },
+        "lockedUntil": { "type": "number" }
+      },
+      "required": ["userId", "pinHash", "updatedAt"]
+    },
+    "PinAuditLog": {
+      "title": "PinAuditLog",
+      "description": "Audit record for PIN resets and changes without plain PINs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "targetUserId": { "type": "string", "maxLength": 128 },
+        "targetUserName": { "type": "string", "maxLength": 100 },
+        "changedByUserId": { "type": "string", "maxLength": 128 },
+        "changedByName": { "type": "string", "maxLength": 100 },
+        "changeType": { "type": "string", "enum": ["user_change", "admin_reset"] },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "targetUserId", "changedByUserId", "changeType", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/pin_credentials/{userId}": {
+      "schema": "PinCredential",
+      "description": "Individual 6-digit PIN salted hashes and lockout status for employee authentication"
+    },
+    "/pin_audit_logs/{logId}": {
+      "schema": "PinAuditLog",
+      "description": "Audit log for PIN management events"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Individual user accounts with role permissions"
+    },
+    "/events/{eventId}": {
+      "schema": "Event",
+      "description": "Calendar campaigns, publications and commemorative events"
+    },
+    "/employees/{employeeId}": {
+      "schema": "Employee",
+      "description": "Company employees and team members"
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Operational tasks and campaign actions"
+    },
+    "/tributes/{tributeId}": {
+      "schema": "Tribute",
+      "description": "Tributes and birthday messages"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "System and activity notifications"
+    }
+  }
+}
