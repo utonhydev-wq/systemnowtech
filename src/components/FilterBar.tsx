@@ -160,6 +160,20 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             Período:
           </span>
           
+          {/* 1. Ano 2026 (Principal) */}
+          <button
+            onClick={() => setFilters((prev) => ({ ...prev, period: 'HISTORICO_2026', year: '2026' }))}
+            className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap min-h-[36px] ${
+              filters.period === 'HISTORICO_2026' || filters.year === '2026'
+                ? 'bg-amber-400 text-slate-950 shadow-md ring-1 ring-amber-300'
+                : 'bg-slate-950 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700'
+            }`}
+          >
+            <CalendarIcon className="w-3.5 h-3.5" />
+            <span>Ano 2026 (Principal)</span>
+          </button>
+
+          {/* 2. Planejamento 2027 (Em andamento) */}
           <button
             onClick={() => setFilters((prev) => ({ ...prev, period: 'PLANEJAMENTO_2027', year: '2027' }))}
             className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap min-h-[36px] ${
@@ -168,22 +182,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 : 'bg-slate-950 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-            <span>Planejamento 2027 (Jaboatão & Nordeste)</span>
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span>Planejamento 2027 (Em andamento)</span>
           </button>
 
-          <button
-            onClick={() => setFilters((prev) => ({ ...prev, period: 'HISTORICO_2026', year: '2026' }))}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap min-h-[36px] ${
-              filters.period === 'HISTORICO_2026' || filters.year === '2026'
-                ? 'bg-slate-200 text-slate-950 font-bold shadow-xs'
-                : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-            }`}
-          >
-            <History className="w-3.5 h-3.5 text-slate-400" />
-            <span>Histórico 2026 (Out-Dez)</span>
-          </button>
-
+          {/* 3. Todos os Anos */}
           <button
             onClick={() => setFilters((prev) => ({ ...prev, period: 'TODOS', year: 'TODOS' }))}
             className={`px-3 py-1.5 text-xs rounded-xl transition-all whitespace-nowrap min-h-[36px] ${

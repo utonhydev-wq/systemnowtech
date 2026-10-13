@@ -191,8 +191,8 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
                 onChange={(e) => setTargetPeriod(e.target.value as 'HISTORICO_2026' | 'PLANEJAMENTO_2027' | 'FUTUROS')}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-amber-400"
               >
-                <option value="PLANEJAMENTO_2027">Planejamento de 2027</option>
-                <option value="HISTORICO_2026">Histórico de 2026</option>
+                <option value="HISTORICO_2026">Ano 2026 (Principal)</option>
+                <option value="PLANEJAMENTO_2027">Planejamento 2027 (Em andamento)</option>
                 <option value="FUTUROS">Próximos anos (2028+)</option>
               </select>
             </div>

@@ -301,8 +301,8 @@ export default function App() {
   // Filters
   const [filters, setFilters] = useState<FilterValues>({
     search: '',
-    period: 'PLANEJAMENTO_2027',
-    year: '2027',
+    period: 'HISTORICO_2026',
+    year: '2026',
     month: 'TODOS',
     category: 'TODAS',
     campaign: 'TODAS',

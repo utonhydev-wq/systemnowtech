@@ -75,7 +75,20 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   throw new Error(JSON.stringify(errInfo));
 }
 
-// Configuration resolution: priority to firebase-applet-config.json, fallback to VITE_ env
+// Configuration resolution: priority to firebase-applet-config.json, fallback to VITE_ env, then embedded defaults
+const EMBEDDED_FIREBASE_CONFIG = {
+  projectId: "gen-lang-client-0419413130",
+  appId: "1:683013349014:web:36016a55f47c48343becb7",
+  apiKey: "AIzaSyCOcezLVzQjLKf16Kjac_zHKGXa57QouJg",
+  authDomain: "gen-lang-client-0419413130.firebaseapp.com",
+  firestoreDatabaseId: "ai-studio-nowtechsolarsist-6c1fb972-c448-4ea8-9d02-7319bf841997",
+  storageBucket: "gen-lang-client-0419413130.firebasestorage.app",
+  messagingSenderId: "683013349014",
+  measurementId: "",
+  oAuthClientId: "683013349014-718cv640n5rfb9a1ekdurisn43ivao2e.apps.googleusercontent.com",
+  recaptchaSiteKey: ""
+};
+
 const resolveFirebaseConfig = () => {
   if (firebaseConfigJson && firebaseConfigJson.apiKey && firebaseConfigJson.projectId) {
     return firebaseConfigJson;
@@ -101,7 +114,8 @@ const resolveFirebaseConfig = () => {
     };
   }
 
-  return null;
+  // Fallback to embedded NowTech configuration so production on Vercel functions seamlessly
+  return EMBEDDED_FIREBASE_CONFIG;
 };
 
 const resolvedConfig = resolveFirebaseConfig();

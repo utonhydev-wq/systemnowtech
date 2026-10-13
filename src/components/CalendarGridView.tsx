@@ -51,7 +51,8 @@ export const CalendarGridView: React.FC<CalendarGridViewProps> = ({
       const yrNum = Number(selectedYear);
       if (!isNaN(yrNum)) return yrNum;
     }
-    return 2027;
+    const todayYr = Number(todayStr.split('-')[0]);
+    return !isNaN(todayYr) ? todayYr : 2026;
   });
 
   // Sync activeYear when selectedYear prop changes
@@ -82,7 +83,8 @@ export const CalendarGridView: React.FC<CalendarGridViewProps> = ({
     if (selectedMonth !== 'TODOS' && monthIndexMap[selectedMonth]) {
       return monthIndexMap[selectedMonth];
     }
-    return 1; // Default to Janeiro for 2027 planning
+    const todayMo = Number(todayStr.split('-')[1]);
+    return !isNaN(todayMo) ? todayMo : 10;
   });
 
   // Keep activeMonth synced when user clicks month filter from outside
@@ -234,6 +236,21 @@ export const CalendarGridView: React.FC<CalendarGridViewProps> = ({
           <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
             <button
               onClick={() => {
+                setActiveYear(2026);
+                if (activeMonth < 10) setActiveMonth(10);
+              }}
+              className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all flex items-center gap-1 ${
+                activeYear === 2026
+                  ? 'bg-amber-400 text-slate-950 shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>2026</span>
+              <span className="text-[10px] opacity-75 font-normal hidden sm:inline">(Principal)</span>
+            </button>
+
+            <button
+              onClick={() => {
                 setActiveYear(2027);
                 if (activeMonth < 1 || activeMonth > 12) setActiveMonth(1);
               }}
@@ -244,22 +261,7 @@ export const CalendarGridView: React.FC<CalendarGridViewProps> = ({
               }`}
             >
               <span>2027</span>
-              <span className="text-[10px] opacity-75 font-normal hidden sm:inline">(Planejamento)</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveYear(2026);
-                if (activeMonth < 10) setActiveMonth(10);
-              }}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1 ${
-                activeYear === 2026
-                  ? 'bg-slate-200 text-slate-950 shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <span>2026</span>
-              <span className="text-[10px] opacity-75 font-normal hidden sm:inline">(Histórico)</span>
+              <span className="text-[10px] opacity-75 font-normal hidden sm:inline">(Em andamento)</span>
             </button>
 
             <button

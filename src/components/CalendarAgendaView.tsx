@@ -42,6 +42,7 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
   onUpdateStatus,
 }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [todayFirst, setTodayFirst] = useState<boolean>(true);
 
   const handleCopyCaption = (e: React.MouseEvent, item: ContentItem) => {
     e.stopPropagation();
@@ -74,28 +75,50 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
 
   const activeEmployees = employees.filter((e) => e.status === 'ATIVO');
 
+  const displayItems = React.useMemo(() => {
+    if (!todayFirst) return items;
+    const futureOrToday = items
+      .filter((i) => i.date >= todayStr)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    const past = items
+      .filter((i) => i.date < todayStr)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    return [...futureOrToday, ...past];
+  }, [items, todayFirst, todayStr]);
+
   return (
     <div className="space-y-3.5">
       {/* Header bar */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between">
+      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-2.5">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-amber-400" />
           <span className="text-xs sm:text-sm font-bold text-white">
-            Feed Diário de Conteúdo ({items.length} dias programados)
+            Feed Diário de Conteúdo ({items.length} postagens)
           </span>
         </div>
-        <span className="text-[11px] text-slate-400">
-          Otimizado para visualização rápida no celular e computador
-        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setTodayFirst(!todayFirst)}
+            className={`text-xs px-2.5 py-1.5 rounded-lg font-semibold border transition-all flex items-center gap-1.5 min-h-[32px] ${
+              todayFirst
+                ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm shadow-amber-500/10'
+                : 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white'
+            }`}
+            title={todayFirst ? 'Ordenado com hoje em primeiro' : 'Ordenado em ordem cronológica geral'}
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span>{todayFirst ? 'Hoje em 1º (Ativo)' : 'Cronológico'}</span>
+          </button>
+        </div>
       </div>
 
-      {items.length === 0 ? (
+      {displayItems.length === 0 ? (
         <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-8 text-center space-y-2">
           <p className="text-sm text-slate-400">Nenhum conteúdo encontrado para os filtros selecionados.</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {items.map((item) => {
+          {displayItems.map((item) => {
             const temporalStatus = getEventTemporalStatus(
               item.date,
               item.endDate,

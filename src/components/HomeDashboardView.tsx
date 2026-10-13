@@ -73,6 +73,23 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({
   const inProdCount = items.filter((i) => i.status === 'EM PRODUÇÃO').length;
   const scheduledCount = items.filter((i) => i.status === 'PLANEJADO' || i.status === 'APROVADO').length;
 
+  // Próximas campanhas agendadas a partir de HOJE (hoje em 1º ex: 13/10/2026, 14/10/2026 em 2º, e assim por diante)
+  const upcomingCampaigns = React.useMemo(() => {
+    const futureOrToday = items
+      .filter((item) => item.date >= todayStr)
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    if (futureOrToday.length >= 4) {
+      return futureOrToday.slice(0, 4);
+    }
+
+    const pastItems = items
+      .filter((item) => item.date < todayStr)
+      .sort((a, b) => b.date.localeCompare(a.date));
+
+    return [...futureOrToday, ...pastItems].slice(0, 4);
+  }, [items, todayStr]);
+
   return (
     <div className="space-y-4 sm:space-y-6 pb-20 md:pb-8 animate-fade-in">
       {/* 1. Welcome Hero Banner */}
@@ -289,36 +306,63 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({
           </div>
 
           <div className="space-y-2">
-            {items.slice(0, 4).map((item) => (
-              <div
-                key={item.id}
-                onClick={() => onSelectContent(item)}
-                className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer flex items-center justify-between gap-3 group"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-xs shrink-0">
-                    <SunMedium className="w-4 h-4" />
+            {upcomingCampaigns.map((item, index) => {
+              const isToday = item.date === todayStr;
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => onSelectContent(item)}
+                  className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 group ${
+                    isToday
+                      ? 'bg-amber-500/10 border-amber-400/60 hover:border-amber-400 ring-1 ring-amber-400/20 shadow-sm shadow-amber-500/10'
+                      : 'bg-slate-950/80 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
+                      isToday
+                        ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20'
+                        : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                    }`}>
+                      <SunMedium className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                          isToday ? 'bg-amber-400/25 text-amber-300 border border-amber-400/30' : 'bg-slate-800 text-slate-400 border border-slate-700'
+                        }`}>
+                          {index + 1}º
+                        </span>
+                        <h4 className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors truncate">
+                          {item.theme}
+                        </h4>
+                      </div>
+                      <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                        {item.dayOfWeek} · {item.format} · {item.channels?.join(', ')}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <h4 className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors truncate">
-                      {item.theme}
-                    </h4>
-                    <p className="text-[11px] text-slate-400 truncate">
-                      {item.format} · {item.channels?.join(', ')}
-                    </p>
-                  </div>
-                </div>
 
-                <div className="text-right shrink-0">
-                  <span className="text-[11px] font-mono text-slate-300">
-                    {formatToDateBR(item.date)}
-                  </span>
-                  <div className="text-[10px] text-amber-400/90">
-                    {item.status}
+                  <div className="text-right shrink-0">
+                    <div className="flex items-center justify-end gap-1.5">
+                      {isToday && (
+                        <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 tracking-wider">
+                          HOJE
+                        </span>
+                      )}
+                      <span className={`text-xs font-mono font-bold ${
+                        isToday ? 'text-amber-400' : 'text-slate-200'
+                      }`}>
+                        {formatToDateBR(item.date)}
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-amber-400/90 font-medium mt-0.5">
+                      {item.status}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
